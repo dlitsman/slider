@@ -150,7 +150,7 @@ class Range extends React.Component {
       const value = this.trimAlignValue(mutatedValue);
       if (value === oldValue) return;
       const isFromKeyboardEvent = true;
-      this.moveTo(value, isFromKeyboardEvent);
+      this.moveTo(value, isFromKeyboardEvent, oldValue);
     }
   }
 
@@ -215,7 +215,7 @@ class Range extends React.Component {
     return this._getPointsCache.points;
   }
 
-  moveTo(value, isFromKeyboardEvent) {
+  moveTo(value, isFromKeyboardEvent, oldValue) {
     const { state, props } = this;
     const nextBounds = [...state.bounds];
     const handle = state.handle === null ? state.recent : state.handle;
@@ -225,7 +225,7 @@ class Range extends React.Component {
       this.pushSurroundingHandles(nextBounds, nextHandle);
     } else if (props.allowCross) {
       nextBounds.sort((a, b) => a - b);
-      nextHandle = nextBounds.indexOf(value);
+      nextHandle = oldValue && value < oldValue ? nextBounds.lastIndexOf(value) : nextBounds.indexOf(value);
     }
     this.onChange({
       handle: nextHandle,
